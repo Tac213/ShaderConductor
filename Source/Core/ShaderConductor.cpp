@@ -27,7 +27,9 @@
 
 #include <dxc/Support/Global.h>
 #include <dxc/Support/Unicode.h>
+#ifdef _MSC_VER
 #include <dxc/Support/WinAdapter.h>
+#endif
 #include <dxc/Support/WinIncludes.h>
 
 #include <algorithm>
@@ -43,10 +45,10 @@
 #include <spirv-tools/libspirv.h>
 #include <spirv.hpp>
 #include <spirv_cross.hpp>
+#include <spirv_cross_util.hpp>
 #include <spirv_glsl.hpp>
 #include <spirv_hlsl.hpp>
 #include <spirv_msl.hpp>
-#include <spirv_cross_util.hpp>
 
 #ifdef LLVM_ON_WIN32
 #include <d3d12shader.h>
@@ -214,7 +216,7 @@ namespace
             }
 
             std::string utf8FileName;
-            if (!Unicode::UTF16ToUTF8String(fileName, &utf8FileName))
+            if (!Unicode::WideToUTF8String(fileName, &utf8FileName))
             {
                 return E_FAIL;
             }
@@ -246,7 +248,8 @@ namespace
             ULONG result = m_ref;
             if (result == 0)
             {
-                delete this;
+                // TODO
+                // delete this;
             }
             return result;
         }
@@ -538,7 +541,7 @@ namespace
             const auto& define = source.defines[i];
 
             std::wstring nameUtf16Str;
-            Unicode::UTF8ToUTF16String(define.name, &nameUtf16Str);
+            Unicode::UTF8ToWideString(define.name, &nameUtf16Str);
             dxcDefineStrings.emplace_back(std::move(nameUtf16Str));
             const wchar_t* nameUtf16 = dxcDefineStrings.back().c_str();
 
@@ -546,7 +549,7 @@ namespace
             if (define.value != nullptr)
             {
                 std::wstring valueUtf16Str;
-                Unicode::UTF8ToUTF16String(define.value, &valueUtf16Str);
+                Unicode::UTF8ToWideString(define.value, &valueUtf16Str);
                 dxcDefineStrings.emplace_back(std::move(valueUtf16Str));
                 valueUtf16 = dxcDefineStrings.back().c_str();
             }
@@ -564,10 +567,10 @@ namespace
         IFTARG(sourceBlob->GetBufferSize() >= 4);
 
         std::wstring shaderNameUtf16;
-        Unicode::UTF8ToUTF16String(source.fileName, &shaderNameUtf16);
+        Unicode::UTF8ToWideString(source.fileName, &shaderNameUtf16);
 
         std::wstring entryPointUtf16;
-        Unicode::UTF8ToUTF16String(source.entryPoint, &entryPointUtf16);
+        Unicode::UTF8ToWideString(source.entryPoint, &entryPointUtf16);
 
         std::vector<std::wstring> dxcArgStrings;
 
@@ -1231,13 +1234,13 @@ namespace ShaderConductor
                                                           &moduleBlobs[i]));
             IFTARG(moduleBlobs[i]->GetBufferSize() >= 4);
 
-            Unicode::UTF8ToUTF16String(modules.modules[i]->name, &moduleNames[i]);
+            Unicode::UTF8ToWideString(modules.modules[i]->name, &moduleNames[i]);
             moduleNamesUtf16[i] = moduleNames[i].c_str();
             IFT(linker->RegisterLibrary(moduleNamesUtf16[i], moduleBlobs[i]));
         }
 
         std::wstring entryPointUtf16;
-        Unicode::UTF8ToUTF16String(modules.entryPoint, &entryPointUtf16);
+        Unicode::UTF8ToWideString(modules.entryPoint, &entryPointUtf16);
 
         const std::wstring shaderProfile = ShaderProfileName(modules.stage, options.shaderModel);
         CComPtr<IDxcOperationResult> linkResult;

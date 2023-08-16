@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-set(SPIRV_Tools_REV "c341f7a6cd441d05ca1347ee39f2f03f32225c59")
+set(SPIRV_Tools_REV "89ca3aa571fe238944b31e88d5d8fe75fab0227a")
 
 UpdateExternalLib("SPIRV-Tools" "https://github.com/KhronosGroup/SPIRV-Tools.git" ${SPIRV_Tools_REV})
 
