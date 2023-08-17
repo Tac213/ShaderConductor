@@ -29,7 +29,7 @@ function(UpdateExternalLib name url rev)
     if(need_checkout)
         message(STATUS "Checking out to revision ${rev}...")
         execute_process(COMMAND "${git_executable}" "checkout" "-q" ${rev} WORKING_DIRECTORY "${external_lib_folder}")
-        execute_process(COMMAND "${git_executable}" "submodule" "update" "--recursive" WORKING_DIRECTORY "${external_lib_folder}")
+        execute_process(COMMAND "${git_executable}" "submodule" "update" "--init" "--recursive" WORKING_DIRECTORY "${external_lib_folder}")
     endif()
 
     set(${ARGV3} ${need_checkout} PARENT_SCOPE)
