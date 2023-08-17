@@ -28,7 +28,7 @@
 #include <dxc/Support/Global.h>
 #include <dxc/Support/Unicode.h>
 #ifdef _MSC_VER
-#include <dxc/Support/WinAdapter.h>
+#include <dxc/WinAdapter.h>
 #endif
 #include <dxc/Support/WinIncludes.h>
 

@@ -3,22 +3,22 @@
 [![Build Status](https://dev.azure.com/msft-ShaderConductor/public/_apis/build/status/ShaderConductor-CI)](https://dev.azure.com/msft-ShaderConductor/public/_build/latest?definitionId=1)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
-
 ShaderConductor is a tool designed for cross-compiling HLSL to other shading languages.
 
 ## Features
 
-* Converts HLSL to readable, usable and efficient GLSL
-* Converts HLSL to readable, usable and efficient ESSL
-* Converts HLSL to readable, usable and efficient Metal Shading Language (MSL)
-* Converts HLSL to readable, usable and efficient old shader model HLSL
-* Supports all stages of shaders, vertex, pixel, hull, domain, geometry, and compute.
+- Converts HLSL to readable, usable and efficient GLSL
+- Converts HLSL to readable, usable and efficient ESSL
+- Converts HLSL to readable, usable and efficient Metal Shading Language (MSL)
+- Converts HLSL to readable, usable and efficient old shader model HLSL
+- Supports all stages of shaders, vertex, pixel, hull, domain, geometry, and compute.
 
 Note that this project is still in an early stage, and it is under active development.
 
 ## Architecture
 
 ShaderConductor is not a real compiler. Instead, it glues existing open source components to do the cross-compiling.
+
 1. [DirectX Shader Compiler](https://github.com/Microsoft/DirectXShaderCompiler) to compile HLSL to [DXIL](https://github.com/Microsoft/DirectXShaderCompiler/blob/master/docs/DXIL.rst) or [SPIR-V](https://www.khronos.org/registry/spir-v/),
 1. [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) to convert SPIR-V to target shading languages.
 
@@ -26,10 +26,10 @@ ShaderConductor is not a real compiler. Instead, it glues existing open source c
 
 ## Prerequisites
 
-* [Git](http://git-scm.com/downloads). Put git into the PATH is recommended.
-* [Visual Studio 2017](https://www.visualstudio.com/downloads). Select the following workloads: Universal Windows Platform Development and Desktop Development with C++.
-* [CMake](https://www.cmake.org/download/). Version 3.9 or up. It's highly recommended to choose "Add CMake to the system PATH for all users" during installation.
-* [Python](https://www.python.org/downloads/). Version 2.7 or up. You need not change your PATH variable during installation.
+- [Git](http://git-scm.com/downloads). Put git into the PATH is recommended.
+- [Visual Studio 2022](https://www.visualstudio.com/downloads). Select the following workloads: Universal Windows Platform Development and Desktop Development with C++.
+- [CMake](https://www.cmake.org/download/). Version 3.9 or up. It's highly recommended to choose "Add CMake to the system PATH for all users" during installation.
+- [Python](https://www.python.org/downloads/). Version 2.7 or up. You need not change your PATH variable during installation.
 
 ## Building
 
@@ -40,21 +40,43 @@ ShaderConductor has been tested on Windows, Linux, and macOS.
 ```
   BuildAll.py <BuildSystem> <Compiler> <Architecture> <Configuration>
 ```
+
 where,
-* \<BuildSystem\> can be ninja or vs2017. Default is vs2017.
-* \<Compiler\> can be vc141 on Windows, gcc or clang on Linux, clang on macOS.
-* \<Architecture\> must be x64 (for now).
-* \<Configuration\> can be Debug, Release, RelWithDebInfo, or MinSizeRel. Default is Release.
- 
+
+- \<BuildSystem\> can be ninja or vs2017. Default is vs2017.
+- \<Compiler\> can be vc141 on Windows, gcc or clang on Linux, clang on macOS.
+- \<Architecture\> must be x64 (for now).
+- \<Configuration\> can be Debug, Release, RelWithDebInfo, or MinSizeRel. Default is Release.
+
 This script automatically grabs external dependencies to External folder, generates project file in Build/\<BuildSystem\>-\<Compiler\>-\<Platform\>-\<Architecture\>[-\<Configuration\>], and builds it.
 
 ### The manual way:
 
+Windows:
+
 ```
   mkdir Build
   cd Build
-  cmake -G "Visual Studio 15" -T host=x64 -A x64 ../
-  cmake --build .
+  cmake -DCMAKE_BUILD_TYPE:STRING=Release -S .. -B . -G "Visual Studio 17"
+  cmake --build . --config Release
+```
+
+Mac:
+
+```
+  mkdir Build
+  cd Build
+  cmake -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=clang -DCMAKE_CXX_COMPILER:FILEPATH=clang++ -S .. -B . -G Ninja
+  cmake --build . --config Release
+```
+
+Linux:
+
+```
+  mkdir Build
+  cd Build
+  cmake -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=gcc -DCMAKE_CXX_COMPILER:FILEPATH=g++ -S .. -B . -G Ninja
+  cmake --build . --config Release
 ```
 
 After building, the output file ShaderConductor.dll can be located in \<YourCMakeTargetFolder\>/Bin/\<Configuration\>/. It depends on dxcompiler.dll in the same folder.
